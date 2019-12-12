@@ -1,7 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Migrations;
-using System;
-using System.Collections.Generic;
 
 namespace JWTAPI.Migrations
 {
@@ -13,10 +11,10 @@ namespace JWTAPI.Migrations
                 name: "Users",
                 columns: table => new
                 {
-                    Id = table.Column<int>(nullable: false)
+                    Id = table.Column<int>()
                         .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
-                    Email = table.Column<string>(maxLength: 255, nullable: false),
-                    Password = table.Column<string>(nullable: false)
+                    Email = table.Column<string>(maxLength: 255),
+                    Password = table.Column<string>()
                 },
                 constraints: table =>
                 {

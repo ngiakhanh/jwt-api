@@ -1,13 +1,12 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel.DataAnnotations;
-using Microsoft.AspNetCore.Identity;
 
 namespace JWTAPI.Core.Models
 {
     public class User
     {
-        public int Id { get; set; }
+        public string Id { get; set; }
 
         [Required]
         [DataType(DataType.EmailAddress)]

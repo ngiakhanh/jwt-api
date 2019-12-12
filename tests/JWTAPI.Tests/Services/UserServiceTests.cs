@@ -5,6 +5,7 @@ using JWTAPI.Core.Repositories;
 using JWTAPI.Core.Security.Hashing;
 using JWTAPI.Core.Services;
 using JWTAPI.Services;
+using Microsoft.AspNetCore.Identity;
 using Moq;
 using Xunit;
 
@@ -15,13 +16,14 @@ namespace JWTPAPI.Tests.Services
         private Mock<IPasswordHasher> _passwordHasher;
         private Mock<IUserRepository> _userRepository;
         private Mock<IUnitOfWork> _unitOfWork;
+        private Mock<IPasswordHasher<User>> _passwordHasherIdentity;
 
         private IUserService _userService;
 
         public UserServiceTests()
         {
             SetupMocks();
-            _userService = new UserService(_userRepository.Object, _unitOfWork.Object, _passwordHasher.Object);
+            _userService = new UserService(_userRepository.Object, _unitOfWork.Object, _passwordHasher.Object, _passwordHasherIdentity.Object);
         }
 
         private void SetupMocks()
@@ -31,7 +33,7 @@ namespace JWTPAPI.Tests.Services
 
             _userRepository = new Mock<IUserRepository>();
             _userRepository.Setup(r => r.FindByEmailAsync("test@test.com"))
-                .ReturnsAsync(new User { Id = 1, Email = "test@test.com", UserRoles = new Collection<UserRole>() });
+                .ReturnsAsync(new User { Id = "1", Email = "test@test.com", UserRoles = new Collection<UserRole>() });
 
             _userRepository.Setup(r => r.FindByEmailAsync("secondtest@secondtest.com"))
                 .Returns(Task.FromResult<User>(null));

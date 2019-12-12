@@ -6,6 +6,7 @@ using JWTAPI.Core.Security.Hashing;
 using JWTAPI.Core.Security.Tokens;
 using JWTAPI.Core.Services;
 using JWTAPI.Services;
+using Microsoft.AspNetCore.Identity;
 using Moq;
 using Xunit;
 
@@ -17,6 +18,7 @@ namespace JWTPAPI.Tests.Services
 
         private Mock<IUserService> _userService;
         private Mock<IPasswordHasher> _passwordHasher;
+        private Mock<IPasswordHasher<User>> _passwordHasherIdentity;
         private Mock<ITokenHandler> _tokenHandler;
 
         private IAuthenticationService _authenticationService;
@@ -24,7 +26,7 @@ namespace JWTPAPI.Tests.Services
         public AuthenticationServiceTests()
         {
             SetupMocks();
-            _authenticationService = new AuthenticationService(_userService.Object, _passwordHasher.Object, _tokenHandler.Object);
+            _authenticationService = new AuthenticationService(_userService.Object, _passwordHasher.Object, _tokenHandler.Object, _passwordHasherIdentity.Object);
         }
 
         private void SetupMocks()
@@ -36,18 +38,18 @@ namespace JWTPAPI.Tests.Services
             _userService.Setup(u => u.FindByEmailAsync("test@test.com"))
                         .ReturnsAsync(new User
                         {
-                            Id = 1,
+                            Id = "1",
                             Email = "test@test.com",
                             Password = "123",
                             UserRoles = new Collection<UserRole>
                             {
                                 new UserRole
                                 {
-                                    UserId = 1,
-                                    RoleId = 1,
+                                    UserId = "1",
+                                    RoleId = "1",
                                     Role = new Role
                                     {
-                                        Id = 1,
+                                        Id = "1",
                                         Name = ERole.Common.ToString()
                                     }
                                 }

@@ -1,8 +1,10 @@
 using System.Threading.Tasks;
+using JWTAPI.Core.Models;
 using JWTAPI.Core.Security.Hashing;
 using JWTAPI.Core.Security.Tokens;
 using JWTAPI.Core.Services;
 using JWTAPI.Core.Services.Communication;
+using Microsoft.AspNetCore.Identity;
 
 namespace JWTAPI.Services
 {
@@ -10,20 +12,22 @@ namespace JWTAPI.Services
     {
         private readonly IUserService _userService;
         private readonly IPasswordHasher _passwordHasher;
+        private readonly IPasswordHasher<User> _passwordHasherIdentity;
         private readonly ITokenHandler _tokenHandler;
         
-        public AuthenticationService(IUserService userService, IPasswordHasher passwordHasher, ITokenHandler tokenHandler)
+        public AuthenticationService(IUserService userService, IPasswordHasher passwordHasher, ITokenHandler tokenHandler, IPasswordHasher<User> passwordHasherIdentity)
         {
             _tokenHandler = tokenHandler;
             _passwordHasher = passwordHasher;
             _userService = userService;
+            _passwordHasherIdentity = passwordHasherIdentity;
         }
 
         public async Task<TokenResponse> CreateAccessTokenAsync(string email, string password)
         {
             var user = await _userService.FindByEmailAsync(email);
-
-            if (user == null || !_passwordHasher.PasswordMatches(password, user.Password))
+            if (user == null || _passwordHasherIdentity.VerifyHashedPassword(user, user.Password, password) == 0)
+            //if (user == null || !_passwordHasher.PasswordMatches(password, user.Password))
             {
                 return new TokenResponse(false, "Invalid credentials.", null);
             }

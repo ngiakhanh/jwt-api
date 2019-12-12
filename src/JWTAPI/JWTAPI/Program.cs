@@ -1,7 +1,9 @@
-﻿using JWTAPI.Core.Security.Hashing;
+﻿using JWTAPI.Core.Models;
+using JWTAPI.Core.Security.Hashing;
 using JWTAPI.Persistence;
 using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace JWTAPI
@@ -16,8 +18,9 @@ namespace JWTAPI
             {
                 var services = scope.ServiceProvider;
                 var context = services.GetService<AppDbContext>();
-                var passwordHasher = services.GetService<IPasswordHasher>();
-                DatabaseSeed.Seed(context, passwordHasher);
+                //var passwordHasher = services.GetService<IPasswordHasher>();
+                var passwordHasherIdentity = services.GetService<IPasswordHasher<User>>();
+                DatabaseSeed.Seed(context, passwordHasherIdentity);
             }
 
             host.Run();

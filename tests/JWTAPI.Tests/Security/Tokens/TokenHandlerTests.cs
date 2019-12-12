@@ -43,7 +43,7 @@ namespace JWTPAPI.Tests.Security.Tokens
 
             _user = new User
             {
-                Id = 1,
+                Id = "1",
                 Email = "test@test.com",
                 Password = "123",
                 UserRoles = new Collection<UserRole>
@@ -52,7 +52,7 @@ namespace JWTPAPI.Tests.Security.Tokens
                     {
                         Role = new Role
                         {
-                            Id = 1,
+                            Id = "1",
                             Name = ERole.Common.ToString()
                         }
                     }

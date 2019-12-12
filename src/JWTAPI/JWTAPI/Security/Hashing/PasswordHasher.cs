@@ -1,7 +1,6 @@
 using System;
 using System.Runtime.CompilerServices;
 using System.Security.Cryptography;
-using System.Text;
 using JWTAPI.Core.Security.Hashing;
 
 namespace JWTAPI.Security.Hashing
