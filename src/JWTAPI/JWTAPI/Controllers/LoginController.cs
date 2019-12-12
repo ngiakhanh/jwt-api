@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace JWTAPI.Controllers
 {
+    [Route("/api/[controller]")]
     public class AuthController : Controller
     {
         private readonly IMapper _mapper;
@@ -18,7 +19,6 @@ namespace JWTAPI.Controllers
             _mapper = mapper;
         }
 
-        [Route("/api/login")]
         [HttpPost]
         public async Task<IActionResult> LoginAsync([FromBody] UserCredentialsResource userCredentials)
         {
@@ -37,7 +37,7 @@ namespace JWTAPI.Controllers
             return Ok(accessTokenResource);
         }
 
-        [Route("/api/token/refresh")]
+        [Route("token/refresh")]
         [HttpPost]
         public async Task<IActionResult> RefreshTokenAsync([FromBody] RefreshTokenResource refreshTokenResource)
         {
@@ -56,7 +56,7 @@ namespace JWTAPI.Controllers
             return Ok(tokenResource);
         }
 
-        [Route("/api/token/revoke")]
+        [Route("token/revoke")]
         [HttpPost]
         public IActionResult RevokeToken([FromBody] RevokeTokenResource revokeTokenResource)
         {

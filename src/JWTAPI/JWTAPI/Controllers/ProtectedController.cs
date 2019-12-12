@@ -3,11 +3,12 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace JWTAPI.Controllers
 {
+    [Route("/api/[controller]")]
     public class ProtectedController : Controller
     {
         [HttpGet]
         [Authorize]
-        [Route("/api/protectedforcommonusers")]
+        [Route("commonusers")]
         public IActionResult GetProtectedData()
         {
             return Ok("Hello world from protected controller.");
@@ -15,10 +16,10 @@ namespace JWTAPI.Controllers
 
         [HttpGet]
         [Authorize(Roles = "Administrator")]
-        [Route("/api/protectedforadministrators")]
+        [Route("administrators")]
         public IActionResult GetProtectedDataForAdmin()
         {
-            return Ok("Hello admin!.");
+            return Ok("Hello admin!");
         }
     }
 }
