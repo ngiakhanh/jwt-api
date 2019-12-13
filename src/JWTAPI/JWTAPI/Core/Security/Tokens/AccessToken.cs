@@ -8,10 +8,7 @@ namespace JWTAPI.Core.Security.Tokens
 
         public AccessToken(string token, long expiration, RefreshToken refreshToken) : base(token, expiration)
         {
-            if(refreshToken == null)
-                throw new ArgumentException("Specify a valid refresh token.");
-                
-            RefreshToken = refreshToken;
+            RefreshToken = refreshToken ?? throw new ArgumentException("Specify a valid refresh token.");
         }
     }
 }

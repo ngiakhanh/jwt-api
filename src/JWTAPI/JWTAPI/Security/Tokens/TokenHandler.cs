@@ -6,6 +6,7 @@ using System.Security.Claims;
 using JWTAPI.Core.Models;
 using JWTAPI.Core.Security.Hashing;
 using JWTAPI.Core.Security.Tokens;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Options;
 
 namespace JWTAPI.Security.Tokens
@@ -16,13 +17,15 @@ namespace JWTAPI.Security.Tokens
 
         private readonly TokenOptions _tokenOptions;
         private readonly SigningConfigurations _signingConfigurations;
-        private readonly IPasswordHasher _passwordHaser;
+        private readonly IPasswordHasher _passwordHasher;
+        private readonly IPasswordHasher<User> _passwordHasherIdentity;
 
-        public TokenHandler(IOptions<TokenOptions> tokenOptionsSnapshot, SigningConfigurations signingConfigurations, IPasswordHasher passwordHaser)
+        public TokenHandler(IOptions<TokenOptions> tokenOptionsSnapshot, SigningConfigurations signingConfigurations, IPasswordHasher passwordHasher, IPasswordHasher<User> passwordHasherIdentity)
         {
-            _passwordHaser = passwordHaser;
+            _passwordHasher = passwordHasher;
             _tokenOptions = tokenOptionsSnapshot.Value;
             _signingConfigurations = signingConfigurations;
+            _passwordHasherIdentity = passwordHasherIdentity;
         }
 
         public AccessToken CreateAccessToken(User user)
@@ -55,7 +58,7 @@ namespace JWTAPI.Security.Tokens
         {
             var refreshToken = new RefreshToken
             (
-                token : _passwordHaser.HashPassword(Guid.NewGuid().ToString()),
+                token : _passwordHasherIdentity.HashPassword(null, Guid.NewGuid().ToString()),
                 expiration : DateTime.UtcNow.AddSeconds(_tokenOptions.RefreshTokenExpiration).Ticks
             );
 
