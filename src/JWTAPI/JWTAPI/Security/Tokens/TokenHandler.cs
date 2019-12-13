@@ -30,7 +30,7 @@ namespace JWTAPI.Security.Tokens
 
         public AccessToken CreateAccessToken(User user)
         {
-            var refreshToken = BuildRefreshToken();
+            var refreshToken = BuildRefreshToken(user);
             var accessToken = BuildAccessToken(user, refreshToken);
             _refreshTokens.Add(refreshToken);
 
@@ -54,11 +54,11 @@ namespace JWTAPI.Security.Tokens
             TakeRefreshToken(token);
         }
 
-        private RefreshToken BuildRefreshToken()
+        private RefreshToken BuildRefreshToken(User user)
         {
             var refreshToken = new RefreshToken
             (
-                token : _passwordHasherIdentity.HashPassword(null, Guid.NewGuid().ToString()),
+                token : _passwordHasherIdentity.HashPassword(user, Guid.NewGuid().ToString()),
                 expiration : DateTime.UtcNow.AddSeconds(_tokenOptions.RefreshTokenExpiration).Ticks
             );
 
@@ -92,11 +92,7 @@ namespace JWTAPI.Security.Tokens
                 new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
                 new Claim(JwtRegisteredClaimNames.Sub, user.Email)
             };
-
-            foreach (var userRole in user.UserRoles)
-            {
-                claims.Add(new Claim(ClaimTypes.Role, userRole.Role.Name));
-            }
+            claims.AddRange(user.UserRoles.Select(userRole => new Claim(ClaimTypes.Role, userRole.Role.Name)));
 
             return claims;
         }

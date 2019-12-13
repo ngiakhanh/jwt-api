@@ -4,9 +4,11 @@ using JWTAPI.Core.Models;
 using JWTAPI.Core.Security.Hashing;
 using JWTAPI.Core.Security.Tokens;
 using JWTAPI.Security.Tokens;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Options;
 using Moq;
 using Xunit;
+using TokenOptions = JWTAPI.Security.Tokens.TokenOptions;
 
 namespace JWTPAPI.Tests.Security.Tokens
 {
@@ -14,6 +16,7 @@ namespace JWTPAPI.Tests.Security.Tokens
     {
         private Mock<IOptions<TokenOptions>> _tokenOptions;
         private Mock<IPasswordHasher> _passwordHasher;
+        private Mock<IPasswordHasher<User>> _passwordHasherIdentity;
         private SigningConfigurations _signingConfigurations;
         private User _user;
 
@@ -22,7 +25,7 @@ namespace JWTPAPI.Tests.Security.Tokens
         public TokenHandlerTests()
         {
             SetupMocks();
-            _tokenHandler = new TokenHandler(_tokenOptions.Object, _signingConfigurations, _passwordHasher.Object);
+            _tokenHandler = new TokenHandler(_tokenOptions.Object, _signingConfigurations, _passwordHasher.Object, _passwordHasherIdentity.Object);
         }
 
         private void SetupMocks()
@@ -38,6 +41,9 @@ namespace JWTPAPI.Tests.Security.Tokens
 
             _passwordHasher = new Mock<IPasswordHasher>();
             _passwordHasher.Setup(ph => ph.HashPassword(It.IsAny<string>())).Returns("123");
+
+            _passwordHasherIdentity = new Mock<IPasswordHasher<User>>();
+            _passwordHasherIdentity.Setup(ph => ph.HashPassword(null, It.IsAny<string>())).Returns("123");
 
             _signingConfigurations = new SigningConfigurations();
 
