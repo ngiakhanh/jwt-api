@@ -4,12 +4,12 @@
         <name>JWTAPI</name>
     </assembly>
     <members>
-        <member name="P:JWTAPI.ErrorHandling.Error.Message">
+        <member name="P:JWTAPI.ErrorHandling.ErrorHandler.Message">
             <summary>
             Message of the error.
             </summary>
         </member>
-        <member name="P:JWTAPI.ErrorHandling.Error.Type">
+        <member name="P:JWTAPI.ErrorHandling.ErrorHandler.Type">
             <summary>
             Error type. Example: 'ArgumentException'
             </summary>

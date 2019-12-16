@@ -1,6 +1,6 @@
 ﻿namespace JWTAPI.ErrorHandling
 {
-    public class Error
+    public class ErrorHandler
     {
         /// <summary>
         /// Message of the error.

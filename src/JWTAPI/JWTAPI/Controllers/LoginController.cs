@@ -1,3 +1,4 @@
+using System.IO;
 using System.Threading.Tasks;
 using AutoMapper;
 using JWTAPI.Controllers.Resources;
@@ -9,7 +10,7 @@ namespace JWTAPI.Controllers
 {
     [Route("/api/[controller]")]
     [ApiController]
-    public class AuthController : Controller
+    public class AuthController : ControllerBase
     {
         private readonly IMapper _mapper;
         private readonly IAuthenticationService _authenticationService;
@@ -31,6 +32,7 @@ namespace JWTAPI.Controllers
 
             var accessTokenResource = _mapper.Map<AccessToken, AccessTokenResource>(response.Token);
             return Ok(accessTokenResource);
+            //throw new FileNotFoundException();
         }
 
         [Route("token/refresh")]

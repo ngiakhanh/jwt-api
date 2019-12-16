@@ -5,7 +5,7 @@ namespace JWTAPI.Controllers
 {
     [Route("/api/[controller]")]
     [ApiController]
-    public class ProtectedController : Controller
+    public class ProtectedController : ControllerBase
     {
         [HttpGet]
         [Authorize]
