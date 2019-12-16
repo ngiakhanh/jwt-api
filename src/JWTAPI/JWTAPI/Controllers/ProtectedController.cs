@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace JWTAPI.Controllers
 {
     [Route("/api/[controller]")]
+    [ApiController]
     public class ProtectedController : Controller
     {
         [HttpGet]

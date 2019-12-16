@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace JWTAPI.Controllers
 {
     [Route("/api/[controller]")]
+    [ApiController]
     public class UsersController : Controller
     {
         private readonly IMapper _mapper;
@@ -22,11 +23,6 @@ namespace JWTAPI.Controllers
         [HttpPost]
         public async Task<IActionResult> CreateUserAsync([FromBody] UserCredentialsResource userCredentials)
         {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
-
             var user = _mapper.Map<UserCredentialsResource, User>(userCredentials);
             
             var response = await _userService.CreateUserAsync(user, ERole.Common);

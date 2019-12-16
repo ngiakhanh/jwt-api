@@ -2,6 +2,7 @@
 using System.IO;
 using System.Net;
 using AutoMapper;
+using Hellang.Middleware.ProblemDetails;
 using JWTAPI.Core.Models;
 using JWTAPI.Core.Repositories;
 using JWTAPI.Core.Security.Hashing;
@@ -18,6 +19,7 @@ using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -39,6 +41,8 @@ namespace JWTAPI
 
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddProblemDetails();
+            services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
             services.AddDbContext<AppDbContext>(options =>
             {
                 options.UseInMemoryDatabase("jwtapi");
@@ -49,7 +53,7 @@ namespace JWTAPI
 
             services.AddSingleton<IPasswordHasher, PasswordHasher>();
             services.AddSingleton<IPasswordHasher<User>, PasswordHasher<User>>();
-            services.AddSingleton<ITokenHandler, TokenHandler>();
+            services.AddSingleton<ITokenHandler, Security.Tokens.TokenHandler>();
 
             services.AddScoped<IUserService, UserService>();
             services.AddScoped<IAuthenticationService, AuthenticationService>();
@@ -113,29 +117,32 @@ namespace JWTAPI
 
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)
         {
+            app.UseProblemDetails();
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
             }
-
-            app.UseExceptionHandler(appError =>
+            else
             {
-                appError.Run(async context =>
+                app.UseExceptionHandler(appError =>
                 {
-                    context.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
-                    context.Response.ContentType = "application/json";
-
-                    var contextFeature = context.Features.Get<IExceptionHandlerFeature>();
-                    if (contextFeature != null)
+                    appError.Run(async context =>
                     {
-                        await context.Response.WriteAsync(JsonConvert.SerializeObject(new Error
+                        context.Response.StatusCode = (int) HttpStatusCode.InternalServerError;
+                        context.Response.ContentType = "application/json";
+
+                        var contextFeature = context.Features.Get<IExceptionHandlerFeature>();
+                        if (contextFeature != null)
                         {
-                            Message = contextFeature.Error.Message,
-                            Type = contextFeature.Error.GetType().Name
-                        }));
-                    }
+                            await context.Response.WriteAsync(JsonConvert.SerializeObject(new Error
+                            {
+                                Message = contextFeature.Error.Message,
+                                Type = contextFeature.Error.GetType().Name
+                            }));
+                        }
+                    });
                 });
-            });
+            }
 
             app.UseAuthentication();
             app.UseMvc();
